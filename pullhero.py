@@ -133,11 +133,16 @@ def main():
     summary, tree, content = ingest(f"{local_repo_path}")
     # TODO: When gitingest supports pulling private repos use the native method
     # summary, tree, content = ingest(f"https://github.com/{owner}/{repo}.git")
-    context = summary
     
     prompt = f"""Code Review Task:
-Context:
-{context}
+Summary:
+{summary}
+
+Tree:
+{tree}
+
+Content:
+{content}
 
 PR Changes:
 {diff}
