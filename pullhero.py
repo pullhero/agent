@@ -135,21 +135,17 @@ def main():
     # summary, tree, content = ingest(f"https://github.com/{owner}/{repo}.git")
     
     prompt = f"""Code Review Task:
-Summary:
-{summary}
-
-Tree:
-{tree}
-
-Content:
+Begin Repository Content Section
 {content}
+End Repository Content Section
 
-PR Changes:
+Begin PR Changes Diff Section
 {diff}
+End PR Changes Diff Section
 
 Instructions:
-1. Analyze changes for quality, bugs, and best practices.
-2. Provide concise feedback.
+1. Analyze exclusively the changes in the PR diff for quality, bugs, and best practices.
+2. Provide concise feedback only for the diff using the Repository Content Section if needed.
 3. End with "Vote: +1" (approve) or "Vote: -1" (request changes)."""
     
     try:
