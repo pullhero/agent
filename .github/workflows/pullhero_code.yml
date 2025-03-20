@@ -17,22 +17,22 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 ---
-name: Pull Hero Code Review
+name: Pull Hero Code Improvement
 
 on:
   issue_comment:
     types: [created]
 
 jobs:
-  review:
+  code:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-      contents: read
+      contents: write
 
     if: |
       github.event.issue.pull_request != null &&
-      startsWith(github.event.comment.body, '/review')
+      startsWith(github.event.comment.body, '/code')
 
     steps:
       - name: Checkout Repository
@@ -112,11 +112,10 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run PullHero
-        uses: ./
+      - name: Run PullHero code assistant agent
+        uses: pullhero/code@main
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           api-key: "${{ secrets.OPENAI_API_KEY }}"
           api-host: "api.openai.com"
           api-model: "gpt-4-turbo"
-          vote-action: "vote"
