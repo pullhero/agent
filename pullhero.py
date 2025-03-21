@@ -101,7 +101,7 @@ def main():
     # LLM endpoint specific
     parser.add_argument('--api-key', default=os.environ.get('LLM_API_KEY'), help='AI API Key')
     parser.add_argument('--api-host', default=os.environ.get('LLM_API_HOST', 'api.openai.com'), help='LLM API HOST, like api.openai.com')
-    parser.add_argument('--api-model', default=os.environ.get('LLM_API_MODEL', 'gpt-4-turbo'), help='LLM Model, like gpt-4-turbo')
+    parser.add_argument('--api-model', default=os.environ.get('LLM_API_MODEL', 'gpt-4o-mini'), help='LLM Model, like gpt-4o-mini')
     # New parameter: vote-action
     parser.add_argument('--vote-action', default=os.environ.get('VOTE_ACTION', 'comment'), help='Action to take for vote: "comment" (default) or "vote" (approve/request changes)')
 

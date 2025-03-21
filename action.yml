@@ -36,7 +36,7 @@ inputs:
     required: true
   api-model:
     description: 'Model name'
-    default: 'gpt-4-turbo'
+    default: 'gpt-4o-mini'
     required: true
   model-digest-length:
     description: 'Max digest length'
