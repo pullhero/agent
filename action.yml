@@ -17,8 +17,8 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 ---
-name: 'PullHero Review'
-description: 'A Python-based Review assistant'
+name: 'PullHero'
+description: 'A Python-based AI assistant'
 author: 'PullHero'
 branding:
   icon: message-square
@@ -43,7 +43,7 @@ inputs:
     default: '4096'
     required: false
   vote-action:
-    description: 'WHether if the action will add a simple comment or approve the PR'
+    description: 'Whether if the action will add a simple comment or approve the PR'
     default: 'comment'
     required: false
 runs:
