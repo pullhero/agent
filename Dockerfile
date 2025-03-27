@@ -23,9 +23,6 @@ FROM python:3.10
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY pullhero.py /usr/bin/pullhero.py
-RUN chmod +x /usr/bin/pullhero.py
-
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

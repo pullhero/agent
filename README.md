@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run code reviews
-        uses: ccamacho/pullhero@v1
+        uses: pullhero/agent@v1
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           api-key: "${{ secrets.OPENAI_API_KEY }}"

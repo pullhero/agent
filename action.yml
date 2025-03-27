@@ -24,35 +24,46 @@ branding:
   icon: message-square
   color: blue
 inputs:
+  #
+  # Specific to GihHub
+  #
   github-token:
     description: 'GitHub token'
     required: true
-  api-key:
+  #
+  # Specific to pullhero
+  #
+  pullhero-action:
+    description: 'What the agent will do [code|review|document|consult]'
+    default: 'review'
+    required: false
+  pullhero-review-action:
+    description: 'Whether if the review action will add a simple comment or approve the PR [comment|vote]'
+    default: 'comment'
+    required: false
+  #
+  # Specific to the LLM provider
+  #
+  llm-api-key:
     description: 'API key for DeepSeek/OpenAI'
     required: true
-  api-host:
+  llm-api-host:
     description: 'AI provider (deepseek/openai)'
     default: 'api.openai.com'
     required: true
-  api-model:
+  llm-api-model:
     description: 'Model name'
     default: 'gpt-4o-mini'
     required: true
-  model-digest-length:
-    description: 'Max digest length'
-    default: '4096'
-    required: false
-  vote-action:
-    description: 'Whether if the action will add a simple comment or approve the PR'
-    default: 'comment'
-    required: false
 runs:
   using: "docker"
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.github-token }}
-    - ${{ inputs.api-key }}
-    - ${{ inputs.api-host }}
-    - ${{ inputs.api-model }}
-    - ${{ inputs.model-digest-length }}
-    - ${{ inputs.vote-action }}
+  env:
+    GITHUB_TOKEN: ${{ inputs.github-token }}
+    
+    PULLHERO_ACTION: ${{ inputs.pullhero-action }}
+    PULLHERO_REVIEW_ACTION: ${{ inputs.pullhero-review-action }}
+    
+    LLM_API_KEY: ${{ inputs.llm-api-key }}
+    LLM_API_HOST: ${{ inputs.llm-api-host }}
+    LLM_API_MODEL: ${{ inputs.llm-api-model }}

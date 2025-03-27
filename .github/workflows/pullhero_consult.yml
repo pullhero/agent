@@ -68,9 +68,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run PullHero consult
-        uses: pullhero/consult@main
+        uses: ./
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-          api-key: "${{ secrets.OPENAI_API_KEY }}"
-          api-host: "api.openai.com"
-          api-model: "gpt-4o-mini"
+          pullhero-action: "consult"
+          llm-api-key: "${{ secrets.OPENAI_API_KEY }}"
+          llm-api-host: "api.openai.com"
+          llm-api-model: "gpt-4o-mini"
