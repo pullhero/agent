@@ -17,37 +17,64 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 ---
-name: 'PullHero Code'
-description: 'A Python-based Review assistant'
+name: 'PullHero'
+description: 'A Python-based AI assistant'
 author: 'PullHero'
 branding:
   icon: message-square
   color: blue
 inputs:
-  github-token:
-    description: 'GitHub token'
+  #
+  # Specific to the vcs
+  #
+  vcs-token:
+    description: 'The GitHub token'
     required: true
-  api-key:
+  vcs-event-path:
+    description: 'The event file path'
+    default: ${{ github.event_path }}
+    required: false
+  vcs-event-name:
+    description: 'The event nameh'
+    default: ${{ github.event_name }}
+    required: false
+  #
+  # Specific to pullhero
+  #
+  agent:
+    description: 'What the agent will do [code|review|document|consult]'
+    default: 'review'
+    required: false
+  agent-action:
+    description: 'Whether if the review action will add a simple comment or approve the PR [comment|vote]'
+    default: 'comment'
+    required: false
+  #
+  # Specific to the LLM provider
+  #
+  llm-api-key:
     description: 'API key for DeepSeek/OpenAI'
     required: true
-  api-host:
+  llm-api-host:
     description: 'AI provider (deepseek/openai)'
     default: 'api.openai.com'
     required: true
-  api-model:
+  llm-api-model:
     description: 'Model name'
     default: 'gpt-4o-mini'
     required: true
-  model-digest-length:
-    description: 'Max digest length'
-    default: '4096'
-    required: false
 runs:
   using: "docker"
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.github-token }}
-    - ${{ inputs.api-key }}
-    - ${{ inputs.api-host }}
-    - ${{ inputs.api-model }}
-    - ${{ inputs.model-digest-length }}
+  env:
+    VCS_TOKEN: ${{ inputs.vcs-token }}
+
+    VCS_EVENT_PATH: ${{ inputs.vcs-event-path }}
+    VCS_EVENT_NAME: ${{ inputs.vcs-event-name }}
+
+    AGENT: ${{ inputs.agent }}
+    AGENT_ACTION: ${{ inputs.agent-action }}
+    
+    LLM_API_KEY: ${{ inputs.llm-api-key }}
+    LLM_API_HOST: ${{ inputs.llm-api-host }}
+    LLM_API_MODEL: ${{ inputs.llm-api-model }}

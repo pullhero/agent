@@ -2,17 +2,17 @@
 
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-PullHero-blue.svg?logo=github&style=flat-square)](https://github.com/marketplace/actions/pullhero)
 
-**AI-Powered Code Improvements**  
-Automated code improvements with automatic branching using 
-state-of-the-art language models.
+**AI-Powered Code Reviews**  
+Automated code reviews with intelligent feedback and approval
+recommendations using state-of-the-art language models.
 
 ## Features ✨
 
 - 🧠 **Smart Code Analysis** - Deep context-aware reviews using DeepSeek or OpenAI
 - 📚 **Repository Understanding** - Code digest generation via [GitIngest](https://github.com/cyclotruc/gitingest)
-- 🔧 **Automatic Branch Creation** - Creates a new branch with suggested improvements
+- ✅ **Clear Voting System** - +1 (Approve) or -1 (Request Changes) recommendations
 - 🔌 **Multi-LLM Support** - Compatible with DeepSeek and OpenAI APIs (v1/chat/completions)
-- 📝 **Clean PR Creation** - Generates a new PR with all suggested enhancements
+- 📝 **Detailed Feedback** - Actionable suggestions in PR comments
 - 🔒 **Secure Configuration** - Encrypted secret handling through GitHub
 - ⚡ **Fast Execution** - Optimized Python implementation
 
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run code reviews
-        uses: ccamacho/pullhero@v1
+        uses: pullhero/agent@v1
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           api-key: "${{ secrets.OPENAI_API_KEY }}"
@@ -187,33 +187,6 @@ jobs:
           api-model: "gpt-4-turbo"
 ```
 
-## How It Works 🔄
-
-1. A user comments `/code` on a pull request
-2. The GitHub Action verifies the user has proper permissions
-3. PullHero clones the repository and analyzes the code context
-4. For each file in the PR, PullHero suggests improvements
-5. A new branch is created based on the original PR branch
-6. All improvements are committed to the new branch
-7. A pull request is created from the improvements branch to the original PR branch
-
-## Custom Prompts 📝
-
-You can customize how PullHero improves your code by adding a `.pullhero.prompt` file to your repository. This file should contain a prompt template with the following placeholders:
-
-- `{code_context}` - Will be replaced with repository context
-- `{current_code}` - Will be replaced with the current file content
-
-If no custom prompt is provided, PullHero will use its default prompt that focuses on:
-- Fixing bugs and potential errors
-- Improving performance and efficiency
-- Refactoring for better readability
-- Implementing best practices
-- Ensuring code safety and security
-- Optimizing memory usage
-- Removing redundant code
-- Enhancing logic and structure
-
 ## Security & Permissions 🔐
 
 ### Required Permissions
@@ -270,8 +243,8 @@ Add a debug step to your workflow:
 - **Clone the repository:**
 
   ```bash
-  git clone https://github.com/pullhero/code.git
-  cd code
+  git clone https://github.com/ccamacho/pullhero.git
+  cd pullhero
   ```
 
 - **Set up a Python virtual environment:**

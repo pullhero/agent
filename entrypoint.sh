@@ -22,11 +22,62 @@ set -e
 # Make sure .bashrc is sourced
 . /root/.bashrc
 
-export GITHUB_TOKEN=$1
-export LLM_API_KEY=$2
-export LLM_API_HOST=$3
-export LLM_API_MODEL=$4
-export LLM_MODEL_DIGEST_LENGTH=$5
-
 echo "Run pullhero"
-python /usr/bin/pullhero.py
+
+# Check if the event path exists
+if [ ! -f "$VCS_EVENT_PATH" ]; then
+  echo "Error: Event path not found: $VCS_EVENT_PATH"
+  exit 1
+fi
+
+# Read the event data from the file
+event_data=$(cat "$VCS_EVENT_PATH")
+
+# Extract base and head branches using jq
+base_branch=$(echo "$event_data" | jq -r '.pull_request.base.ref // "unknown"')
+head_branch=$(echo "$event_data" | jq -r '.pull_request.head.ref // "unknown"')
+repository=$(echo "$event_data" | jq -r '.repository.full_name // "unknown"')
+
+# Determine if the change is a PR or Issue and get the PR number
+change_type="unknown"
+pr_number="none"
+
+if echo "$event_data" | jq -e '.pull_request' > /dev/null; then
+    change_type="pull_request"
+    pr_number=$(echo "$event_data" | jq -r '.pull_request.number')
+elif echo "$event_data" | jq -e '.issue' > /dev/null && echo "$event_data" | jq -e '.issue.pull_request' > /dev/null; then
+    change_type="issue_with_pr"
+    pr_number=$(echo "$event_data" | jq -r '.issue.pull_request.url' | awk -F'/' '{print $NF}')
+elif echo "$event_data" | jq -e '.issue' > /dev/null; then
+    change_type="issue"
+fi
+
+echo "Debugging Variables:"
+echo "VCS_EVENT_PATH: $VCS_EVENT_PATH"
+echo "VCS_EVENT_NAME: $VCS_EVENT_NAME"
+echo "base_branch: $base_branch"
+echo "head_branch: $head_branch"
+echo "repository: $repository"
+echo "change_type: $change_type"
+echo "pr_number: $pr_number"
+echo "VCS_TOKEN: $VCS_TOKEN"
+echo "AGENT: $AGENT"
+echo "AGENT_ACTION: $AGENT_ACTION"
+echo "LLM_API_HOST: $LLM_API_HOST"
+echo "LLM_API_KEY: $LLM_API_KEY"
+echo "LLM_API_MODEL: $LLM_API_MODEL"
+
+pullhero -v
+
+pullhero --vcs-provider "github" \
+         --vcs-token $VCS_TOKEN \
+         --vcs-repository $repository \
+         --vcs-change-id $pr_number \
+         --vcs-change-type $change_type \
+         --vcs-base-branch $base_branch \
+         --vcs-head-branch $head_branch \
+         --agent $AGENT \
+         --agent-action $AGENT_ACTION \
+         --llm-api-key $LLM_API_KEY \
+         --llm-api-host $LLM_API_HOST \
+         --llm-api-model $LLM_API_MODEL

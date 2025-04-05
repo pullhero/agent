@@ -20,11 +20,13 @@
 FROM python:3.10
 
 # Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN apt-get update && \
+    apt-get install -y jq && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY pullhero.py /usr/bin/pullhero.py
-RUN chmod +x /usr/bin/pullhero.py
+# Install dependencies
+COPY requirements.txt .
+RUN python3 -m pip install --upgrade --no-cache-dir -r requirements.txt
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

@@ -114,31 +114,34 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run PullHero Review (Open AI)
-        #uses: pullhero/review@v1
-        uses: pullhero/review@main
+        #uses: pullhero/agent@v1
+        uses: ./
         with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-          api-key: "${{ secrets.OPENAI_API_KEY }}"
-          api-host: "api.openai.com"
-          api-model: "gpt-4o-mini"
-          vote-action: 'comment'
+          vcs-token: "${{ secrets.GITHUB_TOKEN }}"
+          agent: "review"
+          agent-action: "comment"
+          llm-api-key: "${{ secrets.OPENAI_API_KEY }}"
+          llm-api-host: "api.openai.com"
+          llm-api-model: "gpt-4o-mini"
 
       - name: Run PullHero Review (Mistral)
-        #uses: pullhero/review@v1
-        uses: pullhero/review@main
+        #uses: pullhero/agent@v1
+        uses: ./
         with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-          api-key: "${{ secrets.MISTRAL_API_KEY }}"
-          api-host: "api.mistral.ai"
-          api-model: "mistral-large-latest"
-          vote-action: 'comment'
+          vcs-token: "${{ secrets.GITHUB_TOKEN }}"
+          agent: "review"
+          agent-action: "comment"
+          llm-api-key: "${{ secrets.MISTRAL_API_KEY }}"
+          llm-api-host: "api.mistral.ai"
+          llm-api-model: "mistral-large-latest"
 
       - name: Run PullHero Review (DeepSeek)
-        #uses: pullhero/review@v1
-        uses: pullhero/review@main
+        #uses: pullhero/agent@v1
+        uses: ./
         with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-          api-key: "${{ secrets.DEEPSEEK_API_KEY }}"
-          api-host: "api.deepseek.com"
-          api-model: "deepseek-chat"
-          vote-action: 'comment'
+          vcs-token: "${{ secrets.GITHUB_TOKEN }}"
+          agent: "review"
+          agent-action: "comment"
+          llm-api-key: "${{ secrets.DEEPSEEK_API_KEY }}"
+          llm-api-host: "api.deepseek.com"
+          llm-api-model: "deepseek-chat"
