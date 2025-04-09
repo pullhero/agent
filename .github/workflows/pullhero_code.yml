@@ -118,7 +118,7 @@ jobs:
         with:
           vcs-token: "${{ secrets.GITHUB_TOKEN }}"
           agent: "code"
-          agent-action: "fast"
+          agent-action: "comment"
           llm-api-key: "${{ secrets.OPENAI_API_KEY }}"
           llm-api-host: "api.openai.com"
           llm-api-model: "gpt-4o-mini"
