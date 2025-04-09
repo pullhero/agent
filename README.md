@@ -2,7 +2,7 @@
 
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-PullHero-blue.svg?logo=github&style=flat-square)](https://github.com/marketplace/actions/pullhero)
 
-**AI-Powered Code Reviews**  
+**AI-Powered Code Reviews**
 Automated code reviews with intelligent feedback and approval
 recommendations using state-of-the-art language models.
 
@@ -58,15 +58,15 @@ To securely configure PullHero, follow these steps:
 
 TODO:Fix the parameters
 
-| Parameter       | Required | Default     | Description                               |
-|----------------|----------|-------------|-------------------------------------------|
-| `github-token`  | Yes      | -           | GitHub access token                       |
-| `api-key`       | Yes      | -           | API key for LLM provider                  |
-| `provider`      | No       | `openai`    | Either `deepseek` or `openai`             |
-| `model`         | No       | `gpt-4-turbo` | Model name (e.g., `deepseek-chat-1.3`)    |
-| `digest-length` | No       | `4096`      | Maximum characters for code digest        |
-| `temperature`   | No       | `0.2`       | LLM creativity (0-2)                      |
-| `max-feedback`  | No       | `1000`      | Maximum characters in feedback            |
+| Parameter       | Required | Default       | Description                            |
+| --------------- | -------- | ------------- | -------------------------------------- |
+| `github-token`  | Yes      | -             | GitHub access token                    |
+| `api-key`       | Yes      | -             | API key for LLM provider               |
+| `provider`      | No       | `openai`      | Either `deepseek` or `openai`          |
+| `model`         | No       | `gpt-4-turbo` | Model name (e.g., `deepseek-chat-1.3`) |
+| `digest-length` | No       | `4096`        | Maximum characters for code digest     |
+| `temperature`   | No       | `0.2`         | LLM creativity (0-2)                   |
+| `max-feedback`  | No       | `1000`        | Maximum characters in feedback         |
 
 ### Full Configuration Example
 
@@ -211,21 +211,21 @@ permissions:
 on:
   pull_request:
     paths:
-      - 'src/**'
-      - 'lib/**'
+      - "src/**"
+      - "lib/**"
 ```
 
 ## Troubleshooting 🐞
 
 ### Common Issues
 
-| Symptom             | Solution                                |
-|---------------------|-----------------------------------------|
-| Missing API key     | Verify secret name matches workflow input |
-| Model not found     | Check provider/model compatibility      |
-| Long processing     | Reduce `digest-length` value            |
-| Truncated feedback  | Increase `max-feedback` value           |
-| Generic responses   | Adjust `temperature` (0.1-0.5 recommended)|
+| Symptom            | Solution                                   |
+| ------------------ | ------------------------------------------ |
+| Missing API key    | Verify secret name matches workflow input  |
+| Model not found    | Check provider/model compatibility         |
+| Long processing    | Reduce `digest-length` value               |
+| Truncated feedback | Increase `max-feedback` value              |
+| Generic responses  | Adjust `temperature` (0.1-0.5 recommended) |
 
 ### Debugging
 
