@@ -26,8 +26,8 @@ echo "Run pullhero"
 
 # Check if the event path exists
 if [ ! -f "$VCS_EVENT_PATH" ]; then
-  echo "Error: Event path not found: $VCS_EVENT_PATH"
-  exit 1
+    echo "Error: Event path not found: $VCS_EVENT_PATH"
+    exit 1
 fi
 
 event_data=$(cat "$VCS_EVENT_PATH")
@@ -39,57 +39,57 @@ head_branch="unknown"
 repository=$(echo "$event_data" | jq -r '.repository.full_name // "unknown"')
 
 case "$event_type" in
-  "push")
+"push")
     base_branch=$(echo "$event_data" | jq -r '.base_ref // empty')
     # base_ref is null unless pushing to a tag or in some forked workflows, so fallback to GITHUB_REF
     if [ -z "$base_branch" ]; then
-      base_branch=${GITHUB_REF##*/}
+        base_branch=${GITHUB_REF##*/}
     fi
     head_branch=${GITHUB_REF##*/}
     ;;
 
-  "pull_request" | "pull_request_target")
+"pull_request" | "pull_request_target")
     base_branch=$(echo "$event_data" | jq -r '.pull_request.base.ref // "unknown"')
     head_branch=$(echo "$event_data" | jq -r '.pull_request.head.ref // "unknown"')
     ;;
 
-  "workflow_dispatch")
+"workflow_dispatch")
     base_branch=${GITHUB_REF##*/}
     head_branch="unknown"
     ;;
 
-  "repository_dispatch")
+"repository_dispatch")
     # If custom inputs were passed via client payload
     base_branch=$(echo "$event_data" | jq -r '.client_payload.base_branch // "unknown"')
     head_branch=$(echo "$event_data" | jq -r '.client_payload.head_branch // "unknown"')
     ;;
 
-  "schedule")
+"schedule")
     # Typically runs on default branch
     base_branch=${GITHUB_REF##*/}
     head_branch="unknown"
     ;;
 
-  "release")
+"release")
     base_branch=${GITHUB_REF##*/}
     head_branch=$(echo "$event_data" | jq -r '.release.tag_name // "unknown"')
     ;;
 
-  "issue_comment")
+"issue_comment")
     # Handle comments on PRs (which GitHub treats as issues)
     if [ "$(echo "$event_data" | jq -r '.issue.pull_request // empty')" != "" ]; then
-      pr_url=$(echo "$event_data" | jq -r '.issue.pull_request.url')
-      pr_data=$(curl -s -H "Authorization: token $VCS_TOKEN" "$pr_url")
-      base_branch=$(echo "$pr_data" | jq -r '.base.ref // "unknown"')
-      head_branch=$(echo "$pr_data" | jq -r '.head.ref // "unknown"')
+        pr_url=$(echo "$event_data" | jq -r '.issue.pull_request.url')
+        pr_data=$(curl -s -H "Authorization: token $VCS_TOKEN" "$pr_url")
+        base_branch=$(echo "$pr_data" | jq -r '.base.ref // "unknown"')
+        head_branch=$(echo "$pr_data" | jq -r '.head.ref // "unknown"')
     else
-      # Regular issue comment (not on a PR)
-      base_branch=${GITHUB_REF##*/}
-      head_branch="unknown"
+        # Regular issue comment (not on a PR)
+        base_branch=${GITHUB_REF##*/}
+        head_branch="unknown"
     fi
     ;;
 
-  *)
+*)
     echo "Unsupported or unhandled event type: $event_type"
     ;;
 esac
@@ -103,13 +103,13 @@ echo "Head Branch: $head_branch"
 change_type="unknown"
 pr_number="none"
 
-if echo "$event_data" | jq -e '.pull_request' > /dev/null; then
+if echo "$event_data" | jq -e '.pull_request' >/dev/null; then
     change_type="pull_request"
     pr_number=$(echo "$event_data" | jq -r '.pull_request.number')
-elif echo "$event_data" | jq -e '.issue' > /dev/null && echo "$event_data" | jq -e '.issue.pull_request' > /dev/null; then
+elif echo "$event_data" | jq -e '.issue' >/dev/null && echo "$event_data" | jq -e '.issue.pull_request' >/dev/null; then
     change_type="issue_with_pr"
     pr_number=$(echo "$event_data" | jq -r '.issue.pull_request.url' | awk -F'/' '{print $NF}')
-elif echo "$event_data" | jq -e '.issue' > /dev/null; then
+elif echo "$event_data" | jq -e '.issue' >/dev/null; then
     change_type="issue"
 fi
 
@@ -131,14 +131,14 @@ echo "LLM_API_MODEL: $LLM_API_MODEL"
 pullhero -v
 
 pullhero --vcs-provider "github" \
-         --vcs-token $VCS_TOKEN \
-         --vcs-repository $repository \
-         --vcs-change-id $pr_number \
-         --vcs-change-type $change_type \
-         --vcs-base-branch $base_branch \
-         --vcs-head-branch $head_branch \
-         --agent $AGENT \
-         --agent-action $AGENT_ACTION \
-         --llm-api-key $LLM_API_KEY \
-         --llm-api-host $LLM_API_HOST \
-         --llm-api-model $LLM_API_MODEL
+    --vcs-token $VCS_TOKEN \
+    --vcs-repository $repository \
+    --vcs-change-id $pr_number \
+    --vcs-change-type $change_type \
+    --vcs-base-branch $base_branch \
+    --vcs-head-branch $head_branch \
+    --agent $AGENT \
+    --agent-action $AGENT_ACTION \
+    --llm-api-key $LLM_API_KEY \
+    --llm-api-host $LLM_API_HOST \
+    --llm-api-model $LLM_API_MODEL
