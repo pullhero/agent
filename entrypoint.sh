@@ -30,13 +30,60 @@ if [ ! -f "$VCS_EVENT_PATH" ]; then
   exit 1
 fi
 
-# Read the event data from the file
 event_data=$(cat "$VCS_EVENT_PATH")
+event_type=$GITHUB_EVENT_NAME
 
-# Extract base and head branches using jq
-base_branch=$(echo "$event_data" | jq -r '.pull_request.base.ref // "unknown"')
-head_branch=$(echo "$event_data" | jq -r '.pull_request.head.ref // "unknown"')
+# Initialize default values
+base_branch="unknown"
+head_branch="unknown"
 repository=$(echo "$event_data" | jq -r '.repository.full_name // "unknown"')
+
+case "$event_type" in
+  "push")
+    base_branch=$(echo "$event_data" | jq -r '.base_ref // empty')
+    # base_ref is null unless pushing to a tag or in some forked workflows, so fallback to GITHUB_REF
+    if [ -z "$base_branch" ]; then
+      base_branch=${GITHUB_REF##*/}
+    fi
+    head_branch=${GITHUB_REF##*/}
+    ;;
+
+  "pull_request" | "pull_request_target")
+    base_branch=$(echo "$event_data" | jq -r '.pull_request.base.ref // "unknown"')
+    head_branch=$(echo "$event_data" | jq -r '.pull_request.head.ref // "unknown"')
+    ;;
+
+  "workflow_dispatch")
+    base_branch=${GITHUB_REF##*/}
+    head_branch="unknown"
+    ;;
+
+  "repository_dispatch")
+    # If custom inputs were passed via client payload
+    base_branch=$(echo "$event_data" | jq -r '.client_payload.base_branch // "unknown"')
+    head_branch=$(echo "$event_data" | jq -r '.client_payload.head_branch // "unknown"')
+    ;;
+
+  "schedule")
+    # Typically runs on default branch
+    base_branch=${GITHUB_REF##*/}
+    head_branch="unknown"
+    ;;
+
+  "release")
+    base_branch=${GITHUB_REF##*/}
+    head_branch=$(echo "$event_data" | jq -r '.release.tag_name // "unknown"')
+    ;;
+
+  *)
+    echo "Unsupported or unhandled event type: $event_type"
+    ;;
+esac
+
+echo "Repository: $repository"
+echo "Event Type: $event_type"
+echo "Base Branch: $base_branch"
+echo "Head Branch: $head_branch"
 
 # Determine if the change is a PR or Issue and get the PR number
 change_type="unknown"
